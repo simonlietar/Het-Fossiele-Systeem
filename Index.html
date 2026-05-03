@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Het Fossiele Systeem — De Verborgen Kosten</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0805;
+    --dark: #131008;
+    --card: #1a1610;
+    --border: rgba(255,200,80,0.12);
+    --amber: #f5a623;
+    --red: #e8412a;
+    --teal: #2ec4b6;
+    --blue: #4a9edd;
+    --text: #f0e8d0;
+    --muted: #8a7d60;
+    --dim: #4a4232;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 4rem 2rem;
+    position: relative;
+    background: radial-gradient(ellipse at 50% 60%, rgba(245,100,20,0.08) 0%, transparent 70%);
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 20% 80%, rgba(200,60,10,0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(245,166,35,0.04) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    color: var(--amber);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s forwards;
+  }
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3.5rem, 10vw, 9rem);
+    line-height: 0.9;
+    letter-spacing: 0.02em;
+    color: #fff;
+    margin-bottom: 1rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.4s forwards;
+  }
+  .hero h1 span { color: var(--amber); display: block; }
+  .hero-sub {
+    font-size: 1.1rem;
+    color: var(--muted);
+    max-width: 600px;
+    margin: 1.5rem auto 3rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.6s forwards;
+    font-weight: 300;
+  }
+  .scroll-hint {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--dim);
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeUp 0.8s 1s forwards, pulse 2s 1.8s infinite;
+  }
+
+  /* FLAME SEPARATOR */
+  .flame-sep {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    padding: 0.5rem 0;
+    opacity: 0.4;
+  }
+  .flame {
+    width: 3px;
+    background: linear-gradient(to top, var(--red), var(--amber), transparent);
+    border-radius: 2px;
+    animation: flicker var(--d, 1.2s) ease-in-out infinite;
+    animation-delay: var(--dl, 0s);
+  }
+
+  /* SECTION */
+  section {
+    padding: 3rem 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .section-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    color: var(--amber);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    letter-spacing: 0.03em;
+    color: #fff;
+    line-height: 1;
+    margin-bottom: 1.5rem;
+  }
+
+  /* FLOW */
+  .flow-bar {
+    display: flex;
+    height: 72px;
+    border-radius: 6px;
+    overflow: hidden;
+    gap: 3px;
+    background: var(--dark);
+    margin-bottom: 1rem;
+  }
+  .flow-seg {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: filter 0.2s, transform 0.15s;
+    min-width: 0;
+    padding: 4px;
+  }
+  .flow-seg:hover { filter: brightness(1.2); transform: scaleY(1.04); }
+  .flow-seg.active { outline: 2px solid rgba(255,255,255,0.6); outline-offset: -2px; }
+  .flow-seg-name {
+    font-size: 0.6rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.85);
+    text-align: center;
+    line-height: 1.2;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .flow-seg-pct {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    color: rgba(255,255,255,0.55);
+    margin-top: 2px;
+  }
+  .flow-detail {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem;
+    min-height: 80px;
+  }
+  .flow-detail h4 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 0.05em;
+    color: var(--amber);
+    margin-bottom: 0.4rem;
+  }
+  .flow-detail p { font-size: 0.88rem; color: #b8a880; line-height: 1.6; }
+  .flow-detail .source { font-size: 0.68rem; color: var(--dim); margin-top: 0.6rem; font-family: 'DM Mono', monospace; }
+
+  /* CARDS GRID */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.75rem;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .card:hover { border-color: rgba(245,166,35,0.35); transform: translateY(-2px); }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: 10px 10px 0 0;
+  }
+  .card.amber::before { background: linear-gradient(90deg, var(--amber), transparent); }
+  .card.red::before { background: linear-gradient(90deg, var(--red), transparent); }
+  .card.teal::before { background: linear-gradient(90deg, var(--teal), transparent); }
+  .card.blue::before { background: linear-gradient(90deg, var(--blue), transparent); }
+  .card-icon { font-size: 1.8rem; margin-bottom: 0.6rem; display: block; }
+  .card-number {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3rem;
+    line-height: 1;
+    margin-bottom: 0.2rem;
+    letter-spacing: 0.02em;
+  }
+  .card.amber .card-number { color: var(--amber); }
+  .card.red .card-number { color: var(--red); }
+  .card.teal .card-number { color: var(--teal); }
+  .card.blue .card-number { color: var(--blue); }
+  .card-label { font-size: 0.9rem; font-weight: 500; color: #d0c090; margin-bottom: 0.4rem; }
+  .card-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.55; }
+  .card-source { font-size: 0.63rem; color: var(--dim); margin-top: 0.6rem; font-family: 'DM Mono', monospace; }
+
+  /* SHIPS */
+  .ships-visual {
+    background: linear-gradient(180deg, #0a1520 0%, #05101a 100%);
+    border: 1px solid rgba(46,196,182,0.2);
+    border-radius: 10px;
+    padding: 2rem;
+    text-align: center;
+    margin-bottom: 1.25rem;
+  }
+  .ship-row { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; margin-bottom: 1.25rem; }
+  .ship-icon { font-size: 1.4rem; line-height: 1; transition: transform 0.2s; cursor: default; }
+  .ship-icon:hover { transform: scale(1.3); }
+  .ships-stat { font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem; color: var(--teal); line-height: 1; }
+  .ships-label { font-size: 0.85rem; color: var(--muted); margin-top: 0.2rem; }
+  .ship-legend { display: flex; gap: 1.5rem; justify-content: center; margin-top: 1rem; }
+  .ship-leg-item { display: flex; align-items: center; gap: 0.4rem; font-size: 0.75rem; color: var(--muted); }
+
+  /* SUBSIDY COUNTER */
+  .subsidy-block {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: radial-gradient(ellipse at center, rgba(245,166,35,0.06) 0%, transparent 70%);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 1.25rem;
+  }
+  .subsidy-label { font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.2em; color: var(--amber); text-transform: uppercase; margin-bottom: 0.75rem; }
+  .subsidy-number { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.5rem, 7vw, 5.5rem); color: var(--amber); letter-spacing: 0.02em; line-height: 1; margin-bottom: 0.5rem; }
+  .subsidy-desc { font-size: 0.95rem; color: var(--muted); max-width: 480px; margin: 0 auto 0.75rem; }
+  .subsidy-source { font-size: 0.68rem; color: var(--dim); font-family: 'DM Mono', monospace; }
+
+  /* WARS */
+  .wars-list { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem; }
+  .war-item {
+    display: grid;
+    grid-template-columns: 90px 1fr auto;
+    align-items: center;
+    gap: 1.25rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    transition: border-color 0.2s;
+  }
+  .war-item:hover { border-color: rgba(232,65,42,0.35); }
+  .war-year { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--red); letter-spacing: 0.05em; line-height: 1; }
+  .war-year span { display: block; font-family: 'DM Mono', monospace; font-size: 0.58rem; color: var(--dim); font-weight: 400; letter-spacing: 0.1em; margin-top: 2px; }
+  .war-name { font-weight: 500; font-size: 0.9rem; color: var(--text); margin-bottom: 0.15rem; }
+  .war-desc { font-size: 0.78rem; color: var(--muted); }
+  .war-dead { text-align: right; font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--red); white-space: nowrap; }
+  .war-dead span { display: block; font-size: 0.58rem; color: var(--dim); }
+
+  /* COMPARE */
+  .compare-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.75rem;
+    margin-bottom: 1.25rem;
+  }
+  .compare-box-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 0.04em; color: #fff; margin-bottom: 1.5rem; }
+  .compare-item { margin-bottom: 1.25rem; }
+  .compare-item:last-child { margin-bottom: 0; }
+  .compare-item-label { display: flex; justify-content: space-between; margin-bottom: 0.35rem; font-size: 0.82rem; }
+  .compare-item-label .name { color: #d0c090; font-weight: 500; }
+  .compare-item-label .val { font-family: 'DM Mono', monospace; font-size: 0.78rem; }
+  .bar-track { height: 9px; background: rgba(255,255,255,0.06); border-radius: 5px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 5px; transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1); }
+  .bar-sub { font-size: 0.68rem; color: var(--dim); margin-top: 0.25rem; }
+
+  /* PIPELINE VISUAL */
+  .pipeline-visual {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 2rem;
+    margin-bottom: 1.25rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .pipeline-map {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin: 1.5rem 0;
+    position: relative;
+  }
+  .pipe-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 2;
+    flex-shrink: 0;
+  }
+  .pipe-dot {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    border: 2px solid;
+    margin-bottom: 0.4rem;
+  }
+  .pipe-dot.source { background: rgba(232,65,42,0.15); border-color: var(--red); }
+  .pipe-dot.transit { background: rgba(74,158,221,0.12); border-color: var(--blue); }
+  .pipe-dot.dest { background: rgba(46,196,182,0.12); border-color: var(--teal); }
+  .pipe-name { font-size: 0.65rem; color: var(--muted); text-align: center; max-width: 60px; font-family: 'DM Mono', monospace; }
+  .pipe-line {
+    flex: 1;
+    height: 4px;
+    position: relative;
+    z-index: 1;
+    margin-bottom: 1.5rem;
+  }
+  .pipe-line::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--color, var(--amber));
+    opacity: 0.5;
+  }
+  .pipe-line::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 0;
+    width: 20px; height: 20px;
+    margin-top: -10px;
+    border-radius: 50%;
+    background: var(--color, var(--amber));
+    animation: flow-dot var(--spd, 2s) linear infinite;
+    opacity: 0.8;
+  }
+  @keyframes flow-dot {
+    from { left: 0; opacity: 0.8; }
+    90% { opacity: 0.8; }
+    to { left: 100%; opacity: 0; }
+  }
+  .pipe-km {
+    position: absolute;
+    top: -1.2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--amber);
+    white-space: nowrap;
+  }
+
+  /* EU INFRA TABLE */
+  .infra-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .infra-card {
+    background: var(--dark);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem;
+    text-align: center;
+  }
+  .infra-number {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    line-height: 1;
+    margin-bottom: 0.25rem;
+  }
+  .infra-label { font-size: 0.78rem; color: var(--muted); line-height: 1.4; }
+  .infra-source { font-size: 0.6rem; color: var(--dim); margin-top: 0.4rem; font-family: 'DM Mono', monospace; }
+
+  /* DIVIDER */
+  .sect-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2.5rem 2rem;
+    text-align: center;
+    color: var(--dim);
+    font-size: 0.72rem;
+    line-height: 1.8;
+    font-family: 'DM Mono', monospace;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  footer strong { color: var(--muted); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+  @keyframes flicker {
+    0%, 100% { transform: scaleX(1) scaleY(1); opacity: 0.8; }
+    33% { transform: scaleX(0.8) scaleY(1.1); opacity: 1; }
+    66% { transform: scaleX(1.1) scaleY(0.95); opacity: 0.7; }
+  }
+
+  @media (max-width: 600px) {
+    .war-item { grid-template-columns: 70px 1fr; }
+    .war-dead { display: none; }
+    section { padding: 2rem 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">Een visuele analyse · KlimaatWatt 2025</div>
+  <h1>Het Fossiele<span>Systeem</span></h1>
+  <p class="hero-sub">Van oliebron tot uitlaat: waarom fossiele energie inefficiënter, gevaarlijker en duurder is dan ze eruitziet</p>
+  <div class="scroll-hint">↓ Scroll om te ontdekken</div>
+</div>
+
+<div class="flame-sep">
+  <div class="flame" style="height:28px;--d:1.1s;--dl:0s"></div>
+  <div class="flame" style="height:42px;--d:0.9s;--dl:0.15s"></div>
+  <div class="flame" style="height:58px;--d:1.3s;--dl:0.05s"></div>
+  <div class="flame" style="height:48px;--d:1.0s;--dl:0.2s"></div>
+  <div class="flame" style="height:38px;--d:1.2s;--dl:0.1s"></div>
+  <div class="flame" style="height:52px;--d:0.85s;--dl:0.25s"></div>
+  <div class="flame" style="height:33px;--d:1.4s;--dl:0s"></div>
+  <div class="flame" style="height:46px;--d:1.0s;--dl:0.18s"></div>
+  <div class="flame" style="height:60px;--d:0.95s;--dl:0.08s"></div>
+  <div class="flame" style="height:36px;--d:1.25s;--dl:0.22s"></div>
+</div>
+
+<!-- 01 ENERGIEKETEN -->
+<section>
+  <div class="section-tag">01 — Energieketen</div>
+  <h2>Waar gaat<br>de energie heen?</h2>
+  <p style="color:var(--muted);margin-bottom:1.25rem;max-width:600px;font-size:0.9rem;">Van elke 100 eenheden fossiele primaire energie bereikt gemiddeld slechts 20–35 eenheden de eindgebruiker nuttig. Klik op een stap voor details.</p>
+  <div class="flow-bar" id="flowbar"></div>
+  <div class="flow-detail" id="flow-detail">
+    <h4>Selecteer een stap hierboven</h4>
+    <p>Elke fase van de fossiele keten heeft verliezen — van methaan dat lekt bij winning tot warmte die verloren gaat bij verbranding.</p>
+  </div>
+</section>
+
+<hr class="sect-divider">
+
+<!-- 02 EYECATCHERS -->
+<section>
+  <div class="section-tag">02 — Eyecatchers</div>
+  <h2>De cijfers<br>die schokken</h2>
+  <div class="card-grid" id="eyecatcher-grid"></div>
+</section>
+
+<hr class="sect-divider">
+
+<!-- 03 SCHEEPVAART -->
+<section>
+  <div class="section-tag">03 — Scheepvaart</div>
+  <h2>40% van de<br>wereldvloot</h2>
+  <div class="ships-visual">
+    <div class="ship-row" id="ship-row"></div>
+    <div class="ship-legend">
+      <div class="ship-leg-item"><span style="font-size:1.1rem;filter:sepia(1) saturate(4) hue-rotate(340deg) brightness(1.1)">🚢</span> Fossiel transport — tanker/bulkschip (40)</div>
+      <div class="ship-leg-item"><span style="font-size:1.1rem;filter:sepia(0.3) saturate(0.4) brightness(0.55)">🚢</span> Overige vracht (60)</div>
+    </div>
+    <div style="margin-top:1rem;">
+      <div class="ships-stat">40 op 100</div>
+      <div class="ships-label" style="color:var(--teal)">vrachtschepen vervoeren fossiele energie</div>
+    </div>
+  </div>
+  <p style="color:var(--muted);font-size:0.88rem;line-height:1.75;margin-bottom:0.5rem;">Tankers, LNG-carriers en bulkschepen voor steenkool samen vormen een gigantisch fossiel transportnetwerk. Die schepen draaien zelf op zware stookolie — de vuilste brandstof die er bestaat. <strong style="color:var(--text)">De scheepvaart stoot meer CO₂ uit dan de hele luchtvaart</strong>, en het merendeel van die vloot staat in dienst van het fossiele systeem.</p>
+  <p style="color:var(--dim);font-size:0.68rem;font-family:'DM Mono',monospace;">Bron: ICCT Shipping Emissions Report 2023 · Transport & Environment · IEA Shipping Data</p>
+</section>
+
+<!-- 03b WINNING -->
+<section>
+  <div class="section-tag">03b — Winning wereldwijd</div>
+  <h2>Hoeveel putten,<br>mijnen & boringen?</h2>
+  <p style="color:var(--muted);font-size:0.9rem;margin-bottom:1.5rem;max-width:640px;">Dit zijn cijfers specifiek voor fossiele energie — niet voor mijnbouw in het algemeen. De schaal is nauwelijks voorstelbaar.</p>
+  <div class="infra-grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
+    <div class="infra-card">
+      <div class="infra-number" style="color:var(--amber)">~1 miljoen</div>
+      <div class="infra-label">actieve olie- en gasputten wereldwijd (VS alleen al: 918.000 in 2024)</div>
+      <div class="infra-source">US EIA Well Distribution Report 2024 · Rystad Energy</div>
+    </div>
+    <div class="infra-card">
+      <div class="infra-number" style="color:var(--red)">70.000</div>
+      <div class="infra-label">nieuwe olie- en gasputten geboord in 2023, voor $325 miljard</div>
+      <div class="infra-source">Rystad Energy E&P Well Analysis 2024</div>
+    </div>
+    <div class="infra-card">
+      <div class="infra-number" style="color:var(--amber)">2 miljoen+</div>
+      <div class="infra-label">olie- en gasputten geboord in de VS alleen al sinds 1859</div>
+      <div class="infra-source">Visualizing Energy / WellDatabase 2023</div>
+    </div>
+    <div class="infra-card">
+      <div class="infra-number" style="color:var(--teal)">~4.300</div>
+      <div class="infra-label">actieve steenkoolvelden en -mijnen gedocumenteerd wereldwijd</div>
+      <div class="infra-source">Global Coal Mine Tracker — GEM (april 2023)</div>
+    </div>
+    <div class="infra-card">
+      <div class="infra-number" style="color:var(--red)">1.800+</div>
+      <div class="infra-label">extra kleine kolenmijnen (&lt;1 Mtpa productie) gedocumenteerd</div>
+      <div class="infra-source">Global Coal Mine Tracker — GEM december 2024</div>
+    </div>
+    <div class="infra-card">
+      <div class="infra-number" style="color:var(--amber)">25.000+</div>
+      <div class="infra-label">olie- en gasvelden van alle groottes wereldwijd geïdentificeerd</div>
+      <div class="infra-source">Wikipedia List of Oil Fields (94% olie in &lt;1.500 grote velden)</div>
+    </div>
+  </div>
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1.25rem;">
+    <p style="font-size:0.82rem;color:#b8a880;line-height:1.7;"><strong style="color:var(--amber)">Wat er achter die putjes schuilt:</strong> Elke olie- of gasput laat een permanente voetafdruk na: verstoorde grondlagen, potentieel lekkende casingbuizen, vervuild grondwater in de omgeving. In de VS alleen zijn er tienduizenden <em>orphaned wells</em> — verlaten putten zonder eigenaar — die methaan blijven lekken. Elke dag worden wereldwijd gemiddeld zo'n 190 nieuwe putten geboord.</p>
+  </div>
+</section>
+
+<hr class="sect-divider">
+
+
+<section>
+  <div class="section-tag">04 — EU Infrastructuur</div>
+  <h2>Europa's fossiele<br>infrastructuur</h2>
+  <p style="color:var(--muted);font-size:0.9rem;margin-bottom:1.5rem;max-width:640px;">Achter elke liter brandstof schuilt een immens netwerk van pijpen, terminals en pompstations — gebouwd door decennia van fossiele investeringen. Alles wat dit systeem in stand houdt, kost geld, energie en onderhoud.</p>
+
+  <div class="infra-grid">
+    <div class="infra-card">
+      <div class="infra-number" style="color:var(--amber)">€427 mrd</div>
+      <div class="infra-label">EU invoerrekening fossiele energie (2024) — na piek van €604 mrd in 2022</div>
+      <div class="infra-source">Europese Commissie, Energy Prices Report</div>
+    </div>
+    <div class="infra-card">
+      <div class="infra-number" style="color:var(--red)">€111 mrd</div>
+      <div class="infra-label">fossiele subsidies door EU-lidstaten uitbetaald in 2023</div>
+      <div class="infra-source">EEA — Fossil Fuel Subsidies Indicator 2024</div>
+    </div>
+    <div class="infra-card">
+      <div class="infra-number" style="color:var(--amber)">~109.000</div>
+      <div class="infra-label">tankstations in de EU-27 (2023/24)</div>
+      <div class="infra-source">FuelsEurope Statistical Report 2024</div>
+    </div>
+    <div class="infra-card">
+      <div class="infra-number" style="color:var(--teal)">2 mln km</div>
+      <div class="infra-label">gasdistributienet voor gebouwen en huishoudens in de EU</div>
+      <div class="infra-source">ACER Gas Factsheet — European Commission</div>
+    </div>
+    <div class="infra-card">
+      <div class="infra-number" style="color:var(--blue)">200.000 km</div>
+      <div class="infra-label">transmissiepijpleidingen (hoge druk, tussen regio's)</div>
+      <div class="infra-source">ACER Gas Factsheet — European Commission</div>
+    </div>
+    <div class="infra-card">
+      <div class="infra-number" style="color:var(--amber)">20.000+</div>
+      <div class="infra-label">compressor- en drukreductiestations in het EU-gasnet</div>
+      <div class="infra-source">ACER Gas Factsheet — European Commission</div>
+    </div>
+  </div>
+
+  <!-- PIPELINE MAP -->
+  <div class="pipeline-visual">
+    <div class="section-tag" style="margin-bottom:0.5rem;">Internationale gastransportleidingen naar Europa</div>
+    <p style="font-size:0.82rem;color:var(--muted);margin-bottom:1rem;">Europa is afhankelijk van gas via grote internationale corridors. Elk vertegenwoordigt decennia aan geopolitieke macht voor de producerende landen.</p>
+    <div class="pipeline-map" id="pipeline-map"></div>
+    <p style="font-size:0.72rem;color:var(--muted);margin-top:0.5rem;">Totaal gasleidingnetwerk Europa (transmissie + distributie): <strong style="color:var(--text)">meer dan 2,2 miljoen km</strong> — genoeg om de aarde 55 keer te omcirkelen.</p>
+    <p style="font-size:0.65rem;color:var(--dim);margin-top:0.4rem;font-family:'DM Mono',monospace;">Bron: ACER Gas Factsheet · GEM Europe Gas Tracker · Planète Énergies · ENTSOG</p>
+  </div>
+
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1.25rem;margin-top:1.25rem;">
+    <p style="font-size:0.82rem;color:#b8a880;line-height:1.7;"><strong style="color:var(--amber)">Wat dit betekent voor de energietransitie:</strong> Deze infrastructuur vertegenwoordigt honderden miljarden aan investeringen die worden <em style="color:var(--red)">stranded assets</em>. Gasdistributienetten voor gebouwen (2 miljoen km) zijn economisch <strong style="color:var(--text)">niet rendabel om te hergebruiken voor waterstof</strong>: de conversiekosten, drukvereisten en veiligheidsnormen maken dit onhaalbaar voor huishoudens — tegenover de dalende prijs van warmtepompen, batterijen en PV-modules. De 109.000 tankstations worden niet hergebruikt — ze worden vervangen door laadpalen, waarvan er in de EU al meer dan 700.000 geregistreerd staan.</p>
+  </div>
+</section>
+
+<hr class="sect-divider">
+
+<!-- 05 SUBSIDIES -->
+<section>
+  <div class="section-tag">05 — Subsidies</div>
+  <h2>Betalen we<br>echt minder?</h2>
+  <div class="subsidy-block">
+    <div class="subsidy-label">Fossiele subsidies wereldwijd per jaar (2022)</div>
+    <div class="subsidy-number" id="subsidy-counter">$0</div>
+    <p class="subsidy-desc">Dit bedrag is meer dan wat alle overheden wereldwijd samen jaarlijks uitgeven aan onderwijs (4,3% BBP).</p>
+    <div class="subsidy-source">IMF Working Paper WP/2023/169 · Black, Liu, Parry</div>
+  </div>
+
+  <!-- BILLION VISUALIZED -->
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.75rem;margin-bottom:1.25rem;">
+    <div class="section-tag" style="margin-bottom:0.75rem;">$7 biljoen — hoe groot is dat écht?</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;" id="billion-viz"></div>
+  </div>
+  <div class="card-grid" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr))">
+    <div class="card amber" style="text-align:center;">
+      <div class="card-number" style="font-size:2.3rem;">7,1%</div>
+      <div class="card-label">van het wereld-BBP</div>
+      <div class="card-desc">Onderwijs = 4,3% BBP. Fossiele subsidies overtreffen dat ruimschoots.</div>
+    </div>
+    <div class="card red" style="text-align:center;">
+      <div class="card-number" style="font-size:2.3rem;">82%</div>
+      <div class="card-label">impliciete subsidie</div>
+      <div class="card-desc">Niet-beprijsde klimaatschade, luchtvervuiling en externe kosten</div>
+    </div>
+    <div class="card teal" style="text-align:center;">
+      <div class="card-number" style="font-size:2.3rem;">$8,2T</div>
+      <div class="card-label">verwacht in 2030</div>
+      <div class="card-desc">Stijgt terwijl opkomende markten meer fossiel verbruiken</div>
+    </div>
+    <div class="card blue" style="text-align:center;">
+      <div class="card-number" style="font-size:2.3rem;">€111 mrd</div>
+      <div class="card-label">EU fossiele subsidies 2023</div>
+      <div class="card-desc">Duitsland alleen al: €41 mrd. Polen: €16 mrd. Frankrijk: €15 mrd.</div>
+    </div>
+  </div>
+</section>
+
+<hr class="sect-divider">
+
+<!-- 06 OORLOGEN -->
+<section>
+  <div class="section-tag">06 — Geopolitiek</div>
+  <h2>Oorlogen om<br>fossiele energie</h2>
+  <p style="color:var(--muted);margin-bottom:1.25rem;max-width:640px;font-size:0.88rem;">Tussen een kwart en de helft van alle interstate conflicten sinds 1973 zijn verbonden aan olie. Dat omvat directe verovering, proxy-oorlogen, terrorismefinanciering en route-controle.</p>
+  <div class="wars-list" id="wars-list"></div>
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1.25rem;margin-top:1rem;">
+    <p style="font-size:0.85rem;color:var(--muted);">Mechanismen waarmee olie bijdraagt aan conflict:</p>
+    <ul style="margin-top:0.75rem;color:#b8a880;font-size:0.82rem;line-height:1.9;padding-left:1.5rem;">
+      <li>Territoriale verovering van olievelden (resource wars)</li>
+      <li>Petro-agressie: olierijkdom maakt leiders minder verantwoordelijk</li>
+      <li>Externalisering van burgeroorlogen in petrostate</li>
+      <li>Terrorismefinanciering via olie-inkomsten</li>
+      <li>Controle over transportroutes (Straat van Hormuz, pijpleidingen)</li>
+    </ul>
+    <p style="font-size:0.65rem;color:var(--dim);margin-top:0.75rem;font-family:'DM Mono',monospace;">Bron: Belfer Center Harvard "Oil, Conflict and US National Interests" 2013 · IAEE "17 Oil Wars" · Wikipedia Oil War</p>
+  </div>
+</section>
+
+<hr class="sect-divider">
+
+<!-- 07 EFFICIËNTIE -->
+<section>
+  <div class="section-tag">07 — Vergelijking</div>
+  <h2>Fossiel vs.<br>Hernieuwbaar</h2>
+  <div class="compare-box" id="compare-box">
+    <div class="compare-box-title">Nuttig eindrendement per systeem</div>
+    <div id="compare-bars"></div>
+  </div>
+  <p style="color:var(--muted);font-size:0.85rem;max-width:600px;">Een volledig hernieuwbaar systeem (zon → stroom → warmtepomp) brengt 80–90% van de primaire energie nuttig bij de gebruiker. Een kolencentrale haalt 33%. Een benzinemotor: 20–35%.</p>
+</section>
+
+<footer>
+  <strong>Bronnen & verantwoording</strong><br><br>
+  IEA World Energy Outlook 2023 · IMF Fossil Fuel Subsidies WP/2023/169 · IPCC AR6 WG3 Fugitive Emissions · ITOPF Oil Tanker Spill Statistics 2025 · NOAA Deepwater Horizon · ICCT Shipping 2023 · Transport & Environment · Belfer Center Harvard (Colgan 2013) · IAEE "17 Oil Wars" · Global Challenges "Abandoned Mines" · Farmonaut Mining Impact 2025 · Wikipedia Oil Spill · ACER Gas Factsheet · FuelsEurope Statistical Report 2024 · Eurostat COMEXT Energy Imports · European Commission Energy Prices Report · EEA Fossil Fuel Subsidies Indicator 2024 · Global Energy Monitor Europe Gas Tracker · ENTSOG System Capacity Map · Planète Énergies · Al Jazeera Pipelines Infographic · Ember Energy "Shockproof" Report 2025<br><br>
+  Cijfers zijn afgeronde gemiddelden. Exacte waarden variëren per bron, regio en methodologie.
+</footer>
+
+<script>
+// === FLOW ===
+const segments = [
+  { label: 'Winning', flex: 12, color: '#5a2d10', loss: '6–10%', title: 'Winning & ontginning',
+    body: 'Gas- en olieputten lekken gemiddeld 2–3% methaan — een broeikasgas 80× krachtiger dan CO₂ over 20 jaar. Fakkelen (flaring) verbrandt nog eens 3–5%. Open dagbouwmijnen voor steenkool vernietigen ecosystemen. De installaties zelf verbruiken 5–10% van de gewonnen energie.',
+    source: 'IPCC AR6 WG3 · IEA Flaring Monitor 2023 · IEEFA Coal Reports' },
+  { label: 'Raffinage', flex: 9, color: '#7a3d14', loss: '8–15%', title: 'Raffinage & verwerking',
+    body: 'Ruwe olie omzetten naar benzine, diesel en kerosine kost 8–15% van de energieinhoud. Raffinaderijen verbruiken 24/7 enorme hoeveelheden water en stoten zwavelverbindingen en fijnstof uit.',
+    source: 'US EIA Petroleum Refinery Yield Data · IEA Refinery Energy Use' },
+  { label: 'Transport', flex: 11, color: '#4a3a8a', loss: '3–6%', title: 'Transport wereldwijd',
+    body: '40% van alle vrachtschepen transporteert fossiele brandstoffen. Pijpleidingen verliezen 1–3% door lekkage. LNG-tankers koelen gas tot −162°C. Opslagtanks verliezen dagelijks tot 0,5% door verdamping.',
+    source: 'ICCT 2023 · Transport & Environment · IEA Oil Storage' },
+  { label: 'Distributie', flex: 5, color: '#3a3560', loss: '1–2%', title: 'Lokale distributie',
+    body: 'Gasnetten lekken bij aftakkingen en meters. Warmtenetten voor stadsverwarming verliezen 5–15% door slecht geïsoleerde leidingen. In de EU alleen al: 2 miljoen km distributiegasleidingen.',
+    source: 'Eurostat · EPA Evaporative Emissions · ACER Gas Factsheet' },
+  { label: 'Verbranding', flex: 38, color: '#b82a1a', loss: '40–75%', title: 'Verbranding: het grote verlies',
+    body: 'Een verbrandingsmotor zet slechts 20–35% om in beweging. Een kolencentrale haalt 33–40% elektrisch rendement. Zelfs een moderne gascentrale (CCGT) zit op 55–60%. Een warmtepomp op groene stroom levert 300–500% nuttig rendement.',
+    source: 'IEA Energy Efficiency 2023 · ACEA Engine Efficiency · Eurostat Power Plants' },
+  { label: 'Nuttig gebruik', flex: 25, color: '#1a5e35', loss: null, title: '✓ Wat uiteindelijk overblijft',
+    body: 'Van elke 100 eenheden primaire fossiele energie bereikt gemiddeld maar 20–35 eenheden de eindgebruiker nuttig. Een volledig hernieuwbaar systeem (zon → stroom → warmtepomp) haalt 80–90%.',
+    source: 'IEA WEO 2023 · Fraunhofer ISE' },
+];
+
+const bar = document.getElementById('flowbar');
+const detail = document.getElementById('flow-detail');
+segments.forEach(seg => {
+  const d = document.createElement('div');
+  d.className = 'flow-seg';
+  d.style.flex = seg.flex;
+  d.style.background = seg.color;
+  d.innerHTML = `<span class="flow-seg-name">${seg.label}</span>${seg.loss ? `<span class="flow-seg-pct">−${seg.loss}</span>` : '<span class="flow-seg-pct" style="color:rgba(255,255,255,0.4)">✓</span>'}`;
+  d.addEventListener('click', () => {
+    document.querySelectorAll('.flow-seg').forEach(x => x.classList.remove('active'));
+    d.classList.add('active');
+    detail.innerHTML = `<h4>${seg.title}</h4><p>${seg.body}</p><p class="source">${seg.source}</p>`;
+  });
+  bar.appendChild(d);
+});
+
+// === EYECATCHERS ===
+const cards = [
+  { color:'amber', icon:'🚢', num:'40%', label:'van alle vrachtschepen', desc:'… transporteert fossiele brandstoffen — en die schepen draaien zelf ook op stookolie. Een systeem dat zichzelf voedt met zijn eigen product.', source:'ICCT Shipping Emissions Report 2023' },
+  { color:'red', icon:'💧', num:'5,9 mrd L', label:'olie gelekt in Niger Delta', desc:'Tussen 1956 en 2006. Dit is de oppervlakte van Nederland bedekt met een olielaag van 1 mm dik. Wordt "ecocide" genoemd door onderzoekers.', source:'Wikipedia / Niger Delta oil spills (academic)' },
+  { color:'teal', icon:'🌊', num:'507 mln L', label:'Deepwater Horizon (2010)', desc:'134 miljoen US gallon gelekt in 3 maanden. Goed voor 200 olympische zwembaden. Reiniging kostte BP $65 miljard.', source:'NOAA / Deepwater Horizon statistics' },
+  { color:'amber', icon:'⛏️', num:'>30 mln ha', label:'land ingenomen door mijnbouw', desc:'Meer dan 30 miljoen hectare verhandeld voor mijnconcessies in 78 landen. Slechts 25–30% bereikt volledige ecologische herstel.', source:'Global Challenges · Farmonaut Mining Impact 2025' },
+  { color:'red', icon:'☠️', num:'1,6 mln', label:'vermijdbare sterftes per jaar', desc:'Zoveel vroegere overlijdens worden voorkomen als fossiele subsidies afgeschaft worden en brandstofprijzen werkelijke kosten weerspiegelen.', source:'IMF Fossil Fuel Subsidies WP/2023/169' },
+  { color:'teal', icon:'💰', num:'$221.000', label:'fossiele subsidie per seconde', desc:'$7 biljoen per jaar (2022) betekent elke seconde van de dag $221.000 aan subsidies naar olie, gas en kolen. Meer dan uitgaven aan onderwijs.', source:'IMF 2023 — $7T / 365 / 24 / 3600' },
+  { color:'amber', icon:'🔥', num:'3%', label:'methaan lekt ongezuiverd', desc:'Gemiddeld 2–3% van de gasproductie ontsnapt als methaan — 80× krachtiger dan CO₂ over 20 jaar. Bij fracking nog hoger.', source:'IPCC AR6 WG3 — Fugitive Emissions' },
+  { color:'red', icon:'⚡', num:'20–35%', label:'rendement verbrandingsmotor', desc:'Van elke liter benzine bereikt slechts 20–35% de wielen. De rest verdampt als warmte via uitlaat en koeling. Een warmtepomp levert 300–500%.', source:'ACEA / IEA Energy Efficiency 2023' },
+];
+
+const grid = document.getElementById('eyecatcher-grid');
+cards.forEach(c => {
+  grid.innerHTML += `<div class="card ${c.color}">
+    <span class="card-icon">${c.icon}</span>
+    <div class="card-number">${c.num}</div>
+    <div class="card-label">${c.label}</div>
+    <div class="card-desc">${c.desc}</div>
+    <div class="card-source">Bron: ${c.source}</div>
+  </div>`;
+});
+
+// === SHIPS ===
+const shipRow = document.getElementById('ship-row');
+for (let i = 0; i < 100; i++) {
+  const s = document.createElement('span');
+  s.className = 'ship-icon';
+  s.textContent = '🚢';
+  // Fossiel = oranje gloed, overige = blauwgrijs
+  if (i < 40) {
+    s.style.cssText = 'filter: sepia(1) saturate(4) hue-rotate(340deg) brightness(1.1); font-size:1.5rem;';
+    s.title = `Tanker/bulkschip: fossiel transport (olie/gas/kolen)`;
+  } else {
+    s.style.cssText = 'filter: sepia(0.3) saturate(0.4) brightness(0.55); font-size:1.5rem;';
+    s.title = `Vrachtschip: overige goederen`;
+  }
+  shipRow.appendChild(s);
+}
+
+// === PIPELINE MAP ===
+const pipes = [
+  { from: '🇷🇺 Rusland', to: '🇩🇪 Duitsland', label: 'Nord Stream\n(gesaboteerd 2022)', km: '1.224 km', color: '#e8412a', icon: '🔴' },
+  { from: '🇳🇴 Noorwegen', to: '🇬🇧🇩🇪 NW-Europa', label: 'Europipe &\nLangeled', km: '~1.100 km', color: '#f5a623', icon: '🟡' },
+  { from: '🇩🇿 Algerije', to: '🇮🇹 Italië', label: 'TransMed\nPipeline', km: '2.475 km', color: '#4a9edd', icon: '🔵' },
+  { from: '🇦🇿 Azerbeidzjan', to: '🇮🇹 Italië', label: 'TAP — Zuidelijke\nGascorridor', km: '878 km', color: '#2ec4b6', icon: '🟢' },
+];
+
+const pipeMap = document.getElementById('pipeline-map');
+pipes.forEach((p, i) => {
+  // Source node
+  const src = document.createElement('div');
+  src.className = 'pipe-node';
+  src.innerHTML = `<div class="pipe-dot source" style="border-color:${p.color}">${p.from.split(' ')[0]}</div><div class="pipe-name">${p.from.split(' ').slice(1).join(' ')}</div>`;
+  pipeMap.appendChild(src);
+
+  // Line
+  const line = document.createElement('div');
+  line.className = 'pipe-line';
+  line.style.setProperty('--color', p.color);
+  line.style.setProperty('--spd', (1.5 + i * 0.4) + 's');
+  line.innerHTML = `<span class="pipe-km">${p.km} · ${p.label.replace('\n', ' ')}</span>`;
+  pipeMap.appendChild(line);
+
+  // Dest node
+  const dst = document.createElement('div');
+  dst.className = 'pipe-node';
+  dst.innerHTML = `<div class="pipe-dot dest" style="border-color:${p.color}">${p.to.split(' ')[0]}</div><div class="pipe-name">${p.to.split(' ').slice(1).join(' ')}</div>`;
+  pipeMap.appendChild(dst);
+
+  // Add spacing between routes
+  if (i < pipes.length - 1) {
+    const br = document.createElement('div');
+    br.style.cssText = 'width:100%;flex-basis:100%;height:12px;';
+    // Actually need a new row — do it differently via JS row
+  }
+});
+
+// Redo pipeline as stacked rows
+pipeMap.innerHTML = '';
+pipeMap.style.cssText = 'display:flex;flex-direction:column;gap:0.6rem;margin:1rem 0;';
+pipes.forEach(p => {
+  const row = document.createElement('div');
+  row.style.cssText = 'display:grid;grid-template-columns:160px 1fr 160px;align-items:center;gap:0.5rem;';
+  // Parse flag emoji from front of string
+  const fromParts = p.from.match(/^(\S+)\s(.+)$/);
+  const toParts = p.to.match(/^(\S+)\s(.+)$/);
+  const fromFlag = fromParts ? fromParts[1] : '';
+  const fromName = fromParts ? fromParts[2] : p.from;
+  const toFlag = toParts ? toParts[1] : '';
+  const toName = toParts ? toParts[2] : p.to;
+  row.innerHTML = `
+    <div style="text-align:right;display:flex;align-items:center;justify-content:flex-end;gap:0.4rem;">
+      <div>
+        <div style="font-size:0.78rem;font-weight:500;color:var(--text)">${fromName}</div>
+      </div>
+      <span style="font-size:1.4rem;line-height:1">${fromFlag}</span>
+    </div>
+    <div style="position:relative;height:26px;background:rgba(255,255,255,0.04);border-radius:3px;overflow:hidden;">
+      <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:${p.color};opacity:0.18;"></div>
+      <div style="position:absolute;top:50%;width:10px;height:10px;border-radius:50%;background:${p.color};margin-top:-5px;animation:flow-dot 2.5s linear infinite;opacity:0.9;"></div>
+      <span style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:0.58rem;color:${p.color};font-family:'DM Mono',monospace;white-space:nowrap;letter-spacing:0.03em;">${p.label.replace('\n',' ')} · ${p.km}</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:0.4rem;">
+      <span style="font-size:1.4rem;line-height:1">${toFlag}</span>
+      <div style="font-size:0.78rem;font-weight:500;color:var(--text)">${toName}</div>
+    </div>
+  `;
+  pipeMap.appendChild(row);
+});
+
+// === BILLION VISUALIZATION ===
+const billionItems = [
+  { icon: '🏠', color: 'var(--amber)', num: '23,3 miljoen', label: 'woningen van €300.000', detail: 'Genoeg om élke Belgische inwoner een nieuwbouwwoning te geven — tweemaal.' },
+  { icon: '🥖', color: 'var(--teal)', num: '14 biljoen', label: 'broden van €0,50', detail: 'Elke mens op aarde 1.750 broden per jaar — voor altijd.' },
+  { icon: '🌞', color: 'var(--amber)', num: '70 miljard', label: 'zonnepanelen (à $100)', detail: 'Genoeg om de aardse energievraag volledig te dekken met zon.' },
+  { icon: '💊', color: 'var(--red)', num: '700 miljard', label: 'volledige vaccinatiecycli WHO', detail: 'Elk kind op aarde volledig inenten — 10 keer over.' },
+];
+const bviz = document.getElementById('billion-viz');
+billionItems.forEach(b => {
+  bviz.innerHTML += `<div style="background:var(--dark);border:1px solid var(--border);border-radius:8px;padding:1.1rem;text-align:center;">
+    <div style="font-size:2rem;margin-bottom:0.4rem">${b.icon}</div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:${b.color};line-height:1;margin-bottom:0.2rem">${b.num}</div>
+    <div style="font-size:0.78rem;font-weight:500;color:#d0c090;margin-bottom:0.35rem">${b.label}</div>
+    <div style="font-size:0.72rem;color:var(--muted);line-height:1.5">${b.detail}</div>
+  </div>`;
+});
+
+// === WARS ===
+const wars = [
+  { year:'1932–35', name:'Chaco-oorlog', desc:'Bolivia vs. Paraguay — strijd om vermoede oliereserves. Eerste "olieoorlog" van de 20e eeuw.', dead:'~100.000 doden' },
+  { year:'1941', name:'WWII — Japanse opmars', desc:'Japan valt Dutch East Indies aan voor olievelden. Duitsland marcheert naar Baku.', dead:'Miljoenen' },
+  { year:'1973', name:'Yom Kippur & olie-embargo', desc:'OPEC snijdt olie af — recessie in het Westen. Eerste internationale oliecrisis.', dead:'Economische ramp' },
+  { year:'1980–88', name:'Iran-Irak Oorlog', desc:'Controle over olierijke Khuzestan-provincie. Gefinancierd door olie-inkomsten.', dead:'~1 miljoen doden' },
+  { year:'1990–91', name:'Golfoorlog I', desc:'Irak valt Koeweit binnen voor oliereserves (19% van wereldvoorraad).', dead:'~25.000 doden' },
+  { year:'2003', name:'Invasie Irak', desc:'"Onmiskenbaar over olie" — 330 miljard vaten olierijkdom als inzet (IAEE).', dead:'200.000+ doden' },
+  { year:'1983–2005', name:'Soedanese Burgeroorlog', desc:'Buitenlandse olieontginning verergerde conflict. 2 miljoen doden, 4 miljoen ontheemd.', dead:'~2 miljoen doden' },
+  { year:'2022–heden', name:'Russische invasie Oekraïne', desc:'Rosneft levert brandstof aan het Russische leger. Fossil fuel als financieringsbron van oorlog.', dead:'Lopend conflict' },
+];
+
+const wl = document.getElementById('wars-list');
+wars.forEach(w => {
+  wl.innerHTML += `<div class="war-item">
+    <div class="war-year">${w.year}<span>conflict</span></div>
+    <div><div class="war-name">${w.name}</div><div class="war-desc">${w.desc}</div></div>
+    <div class="war-dead">${w.dead}<span>geschat</span></div>
+  </div>`;
+});
+
+// === COMPARE BARS ===
+const compares = [
+  { name:'Benzinemotor (tank → wiel)', val:25, color:'#b82a1a', sub:'~75% verloren als warmte via uitlaat en koeling' },
+  { name:'Dieselvrachtwagen', val:35, color:'#c04020', sub:'~65% verlies bij verbrandingsmotor + transmissie' },
+  { name:'Kolencentrale (elektriciteit)', val:36, color:'#5a2d10', sub:'~64% verlies als warmteuitstoot in het milieu' },
+  { name:'Aardgas CV-ketel (condenserend)', val:72, color:'#7a5a20', sub:'~28% verlies via schoorsteen + winning + transport' },
+  { name:'Windturbine → elektrisch apparaat', val:82, color:'#2a7a9a', sub:'~18% verlies: omvorming + netwerk' },
+  { name:'Zonnepaneel → warmtepomp (COP 4)', val:87, color:'#1a8a5a', sub:'~13% verlies totaal — 87% nuttige warmte' },
+];
+
+const cb = document.getElementById('compare-bars');
+compares.forEach(c => {
+  cb.innerHTML += `<div class="compare-item">
+    <div class="compare-item-label">
+      <span class="name">${c.name}</span>
+      <span class="val" style="color:${c.color}">${c.val}%</span>
+    </div>
+    <div class="bar-track"><div class="bar-fill" data-val="${c.val}" style="width:0%;background:${c.color}"></div></div>
+    <div class="bar-sub">${c.sub}</div>
+  </div>`;
+});
+
+// === SUBSIDY COUNTER ANIMATION ===
+function animateCounter(el, target, duration) {
+  const start = Date.now();
+  const tick = () => {
+    const p = Math.min((Date.now() - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - p, 3);
+    const val = (ease * target).toFixed(1);
+    el.textContent = '$' + val.replace('.', ',') + ' biljoen';
+    if (p < 1) requestAnimationFrame(tick);
+  };
+  tick();
+}
+
+// === INTERSECTION OBSERVER ===
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    if (e.target.id === 'compare-box') {
+      document.querySelectorAll('.bar-fill').forEach(b => { b.style.width = b.dataset.val + '%'; });
+    }
+    if (e.target.classList.contains('subsidy-block')) {
+      animateCounter(document.getElementById('subsidy-counter'), 7, 2200);
+    }
+    io.unobserve(e.target);
+  });
+}, { threshold: 0.3 });
+
+document.getElementById('compare-box') && io.observe(document.getElementById('compare-box'));
+document.querySelector('.subsidy-block') && io.observe(document.querySelector('.subsidy-block'));
+</script>
+</body>
+</html>
